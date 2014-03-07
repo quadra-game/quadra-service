@@ -119,11 +119,14 @@ class QServHandler(webapp.RequestHandler):
 		if len(scores_list) > num:
 			del scores_list[num:]
 
+		self.response.headers['Content-Type'] = 'text/plain; charset=latin1'
 		self.response.out.write('Ok\n')
 		high = 0
 		for score in scores_list:
-			self.response.out.write(format_params('high' + str(high).zfill(3),
-																						scores[score]))
+			data = format_params('high' + str(high).zfill(3), scores[score])
+			if isinstance(data, unicode):
+				data = data.encode('latin1')
+			self.response.out.write(data)
 			high += 1
 
 	def postgame(self):
